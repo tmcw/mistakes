@@ -21,15 +21,15 @@
             for (var i = 0; i < v.length; i++) {
                 if (v[i]) {
                     try {
-                        res += JSON.stringify(eval(v.slice(0,i+1).join(';\n'))) + '\n';
-                        } catch(e) {
+                        res += JSON.stringify(eval(v.slice(0,i+1).join('\n'))) + '\n';
+                    } catch(e) {
                         if (!(e instanceof SyntaxError)) {
                             res += e;
                             } else {
                             res += '\n';
                         }
                     }
-                    } else {
+                } else {
                     res += '\n';
                 }
             }
@@ -40,13 +40,14 @@
             mode: 'javascript',
             matchBrackets: true,
             onChange: runCodes,
+            tabSize: 2,
             smartIndent: false
         });
 
         var result = CodeMirror.fromTextArea(document.getElementById('results'), {
             mode: 'javascript',
-            matchBrackets: true,
-            smartIndent: false
+            tabSize: 2,
+            readOnly: true
         });
 
         function xhr(url, callback) {
