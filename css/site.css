@@ -1,0 +1,23 @@
+body {
+  margin:0;
+  padding:0;
+}
+
+#left {
+  position:absolute;
+  top:0;
+  right:50%;
+  left:0;
+  bottom:0;
+  border-right:1px solid #000;
+}
+
+#right {
+  background:#eee;
+  position:absolute;
+  top:0;
+  left:50%;
+  right:0;
+  height: auto;
+  overflow: visible;
+}
