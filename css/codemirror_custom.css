@@ -1,7 +1,7 @@
 .CodeMirror {
   line-height: 2em;
   font-size:25px;
-  font-family: 'Monaco';
+  font-family: 'Source Code Pro', 'Monaco';
 }
 
 .CodeMirror-scroll {
