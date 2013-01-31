@@ -14,6 +14,7 @@
     <div id='right'>
       <pre id='results'></pre>
     </div>
+    <a class='readme' target="_blank" href='#4679533'>?</a>
     <script>
         function runCodes() {
             var v = editor.getValue().split('\n');
@@ -57,14 +58,21 @@
             xhr.send();
         }
 
-        if (window.location.hash) {
-            xhr("https://api.github.com/gists/" + window.location.hash.substring(1), function() {
+        function gist(id) {
+            xhr("https://api.github.com/gists/" + id, function() {
                 var r = JSON.parse(this.response);
                 for (var k in r.files) {
                     return editor.setValue(r.files[k].content);
                 }
             });
         }
+
+        if (window.location.hash) {
+            gist(window.location.hash.substring(1));
+        }
+        window.onhashchange = function() {
+            gist(window.location.hash.substring(1));
+        };
     </script>
   </body>
 </html>

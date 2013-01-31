@@ -21,3 +21,19 @@ body {
   height: auto;
   overflow: visible;
 }
+
+.readme {
+    font:normal 14px/20px 'Helvetica';
+    text-decoration:none;
+    background:#7E0000;
+    padding:10px;
+    color:#fff;
+    border-radius:10px;
+    position:absolute;
+    right:10px;
+    top:10px;
+    -webkit-transition:background 200ms;
+}
+.readme:hover {
+    background:#CE0000;
+}
