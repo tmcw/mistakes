@@ -23,6 +23,17 @@ function runCodes() {
     result.setValue(res);
 }
 
+function require(x) {
+    var scripts = document.head.getElementsByTagName('script');
+    // do not re-add scripts
+    for (var i = 0; i < scripts.length; i++) {
+        if (scripts[i].src == x) return 'loaded';
+    }
+    var scr = document.head.appendChild(document.createElement('script'));
+    scr.onload = runCodes;
+    scr.src = x;
+}
+
 var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
     mode: 'javascript',
     matchBrackets: true,
