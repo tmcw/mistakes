@@ -1,3 +1,15 @@
+function stringify(x) {
+    if (typeof x == 'function') {
+        return '[function]';
+    } else {
+        try {
+            return JSON.stringify(x);
+        } catch(e) {
+            return '';
+        }
+    }
+}
+
 function runCodes() {
     var v = editor.getValue().split('\n');
     var res = '';
@@ -7,12 +19,10 @@ function runCodes() {
                 if (v[i].match(/^\s*?\/\//)) {
                     res += '\n';
                 } else {
-                    res += JSON.stringify(
-                        // give eval scope.
-                        (function() {
-                            return eval(v.slice(0,i+1).join('\n'));
-                        })()
-                    ) + '\n';
+                    var output = (function() {
+                        return eval(v.slice(0,i+1).join('\n'));
+                    })();
+                    res += stringify(output) + '\n';
                 }
             } catch(e) {
                 if (!(e instanceof SyntaxError)) {
