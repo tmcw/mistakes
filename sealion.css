@@ -1,5 +1,12 @@
+.sl-wrap {
+  position:relative;
+  min-height:400px;
+  overflow:scroll;
+}
+
 .sl-left {
   position:absolute;
+  min-height:400px;
   top:0;
   right:50%;
   left:0;
@@ -10,6 +17,7 @@
 .sl-right {
   background:#eee;
   position:absolute;
+  min-height:400px;
   top:0;
   left:50%;
   right:0;
