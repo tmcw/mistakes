@@ -54,7 +54,7 @@ function sealion(div) {
         code = left.appendChild(document.createElement('textarea')),
         results = right.appendChild(document.createElement('pre'));
 
-    results.value = inner;
+    code.value = inner;
 
     left.className = 'sl-left';
     right.className = 'sl-right';
