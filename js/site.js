@@ -7,7 +7,12 @@ function runCodes() {
                 if (v[i].match(/^\s*?\/\//)) {
                     res += '\n';
                 } else {
-                    res += JSON.stringify(eval(v.slice(0,i+1).join('\n'))) + '\n';
+                    res += JSON.stringify(
+                        // give eval scope.
+                        (function() {
+                            return eval(v.slice(0,i+1).join('\n'));
+                        })()
+                    ) + '\n';
                 }
             } catch(e) {
                 if (!(e instanceof SyntaxError)) {
