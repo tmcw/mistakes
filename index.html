@@ -2,27 +2,29 @@
 <html>
   <head>
     <meta http-equiv='content-type' content='text/html; charset=utf-8' />
-    <title>mistakes</title>
+    <title>sealion</title>
     <meta name='author' content='Tom MacWright' />
     <meta name='description' content='a line-oriented javascript learning environment' />
-    <link href='css/codemirror_custom.css' rel='stylesheet' type='text/css' />
-    <link href='css/site.css' rel='stylesheet' type='text/css' />
+    <link href='sealion.css' rel='stylesheet' type='text/css' />
   </head>
   <body>
-
-    <div id='left'>
-    <textarea id='code'></textarea>
-    </div>
-
-    <div id='right'>
-      <pre id='results'></pre>
-    </div>
-
+    <div id='wrap'></div>
     <a class='readme' target="_blank" href='#4679533'>?</a>
+    <script src='sealion.js'></script>
+<script>
 
-    <script src='js/codemirror.js' type='text/javascript'></script>
-    <script src='js/javascript.js' type='text/javascript'></script>
-    <script src='js/site.js'></script>
+sealion(document.getElementById('wrap'));
+
+if (window.location.hash) {
+    gist(window.location.hash.substring(1));
+}
+
+window.onhashchange = function() {
+    gist(window.location.hash.substring(1));
+};
+
+</script>
+
     <script type="text/javascript">
       var _gauges = _gauges || [];
       (function() {

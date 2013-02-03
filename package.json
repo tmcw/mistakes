@@ -1,0 +1,20 @@
+{
+  "name": "sealion",
+  "version": "0.0.0",
+  "description": "live-coding, oriented towards giving presentations about programming and showing what you mean.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tmcw/sealion.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "184b0f281d06ce2f365d89c0dcd4268a7b6223cb",
+  "dependencies": {
+    "uglify-js": "~2.2.4"
+  }
+}
