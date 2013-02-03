@@ -45,12 +45,16 @@ if (!hasstyle) {
 function sealion(div) {
     var s = {};
 
+    var inner = div.innerHTML;
+    div.innerHTML = '';
     div.className = div.className + ' sl-wrap';
 
     var left = div.appendChild(document.createElement('div')),
         right = div.appendChild(document.createElement('right')),
         code = left.appendChild(document.createElement('textarea')),
         results = right.appendChild(document.createElement('pre'));
+
+    results.value = inner;
 
     left.className = 'sl-left';
     right.className = 'sl-right';
