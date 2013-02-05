@@ -32,14 +32,16 @@ function mistakes(div) {
     function runCodes() {
         var v = editor.getValue().split('\n');
         var res = '';
+        var nScope;
         for (var i = 0; i < v.length; i++) {
             if (v[i]) {
                 try {
+                    nScope = findNearestScopeStart(v.slice(0, i));
                     if (v[i].match(/^\s*?\/\//)) {
                         res += '\n';
                     } else {
                         res += stringify((function() {
-                            return eval(v.slice(0,i+1).join('\n'));
+                            return eval(v.slice(nScope ? nScope + 1 : 0, i + 1).join('\n'));
                         })()) + '\n';
                     }
                 } catch(e) {
@@ -47,8 +49,20 @@ function mistakes(div) {
                     else res += '\n';
                 }
             } else res += '\n';
+            nScope = null;
         }
         result.setValue(res);
+    }
+
+    function findNearestScopeStart(lines){
+        var i = lines.length;
+        var reFunc = /function\s*(?:[_$a-zA-Z][_$a-zA-Z0-9]*)?\s*\([^)]*?\)/;
+        var res;
+        while(i--){
+            res = reFunc.exec(lines[i]);
+            if(res){ return i; }
+        }
+        return null;
     }
 
     function gist(id) {
