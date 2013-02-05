@@ -27,7 +27,7 @@ function xhr(url, callback) {
 }
 
 var hasstyle = false,
-    ssurl = 'http://macwright.org/mistakes/sealion.css';
+    ssurl = 'http://macwright.org/mistakes/mistakes.css';
 
 for (var ss = 0; ss < document.styleSheets.length; ss++) {
     if (document.styleSheets[ss].href == ssurl) {
