@@ -1,5 +1,4 @@
-body {
-  min-height:100%;
+.sl-wrap {
 }
 
 .sl-left {
@@ -7,7 +6,8 @@ body {
   top:0;
   right:50%;
   left:0;
-  height:100%;
+  bottom:0;
+  border-right:1px solid #000;
 }
 
 .sl-right {
@@ -15,7 +15,7 @@ body {
   position:absolute;
   top:0;
   left:50%;
-  height:100%;
+  bottom:0;
   right:0;
   height: auto;
   overflow: visible;
