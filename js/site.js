@@ -8,17 +8,6 @@ function stringify(x) {
     }
 }
 
-function require(x) {
-    var scripts = document.head.getElementsByTagName('script');
-    // do not re-add scripts
-    for (var i = 0; i < scripts.length; i++) {
-        if (scripts[i].src == x) return 'loaded';
-    }
-    var scr = document.head.appendChild(document.createElement('script'));
-    scr.onload = runCodes;
-    scr.src = x;
-}
-
 function xhr(url, callback) {
     var x = new XMLHttpRequest();
     x.open("GET", url, true);
@@ -29,35 +18,16 @@ function xhr(url, callback) {
 function mistakes(div) {
     var s = {};
 
-    var inner = div.innerHTML;
-    div.innerHTML = '';
-    div.className = div.className + ' sl-wrap';
-
-    var left = div.appendChild(document.createElement('div')),
-        right = div.appendChild(document.createElement('right')),
-        code = left.appendChild(document.createElement('textarea')),
-        results = right.appendChild(document.createElement('pre'));
-
-    code.value = inner;
-
-    left.className = 'sl-left';
-    right.className = 'sl-right';
-    code.className = 'code';
-    results.className = 'results';
-
-    var editor = CodeMirror.fromTextArea(code, {
-        mode: 'javascript',
-        matchBrackets: true,
-        onChange: runCodes,
-        tabSize: 2,
-        smartIndent: false
-    });
-
-    var result = CodeMirror.fromTextArea(results, {
-        mode: 'javascript',
-        tabSize: 2,
-        readOnly: true
-    });
+    function require(x) {
+        var scripts = document.head.getElementsByTagName('script');
+        // do not re-add scripts
+        for (var i = 0; i < scripts.length; i++) {
+            if (scripts[i].src == x) return 'loaded';
+        }
+        var scr = document.head.appendChild(document.createElement('script'));
+        scr.onload = runCodes;
+        scr.src = x;
+    }
 
     function runCodes() {
         var v = editor.getValue().split('\n');
@@ -94,6 +64,36 @@ function mistakes(div) {
         editor.setValue(x);
         return s;
     }
+
+    var inner = div.innerHTML;
+    div.innerHTML = '';
+    div.className = div.className + ' sl-wrap';
+
+    var left = div.appendChild(document.createElement('div')),
+        right = div.appendChild(document.createElement('right')),
+        code = left.appendChild(document.createElement('textarea')),
+        results = right.appendChild(document.createElement('pre'));
+
+    code.value = inner;
+
+    left.className = 'sl-left';
+    right.className = 'sl-right';
+    code.className = 'code';
+    results.className = 'results';
+
+    var editor = CodeMirror.fromTextArea(code, {
+        mode: 'javascript',
+        matchBrackets: true,
+        onChange: runCodes,
+        tabSize: 2,
+        smartIndent: false
+    });
+
+    var result = CodeMirror.fromTextArea(results, {
+        mode: 'javascript',
+        tabSize: 2,
+        readOnly: true
+    });
 
     s.gist = gist;
     s.content = content;
