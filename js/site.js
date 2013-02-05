@@ -85,11 +85,17 @@ function mistakes(div) {
         xhr("https://api.github.com/gists/" + id, function() {
             var r = JSON.parse(this.response);
             for (var k in r.files) {
-                return editor.setValue(r.files[k].content);
+                return content(r.files[k].content);
             }
         });
     }
 
+    function content(x) {
+        editor.setValue(x);
+        return s;
+    }
+
     s.gist = gist;
+    s.content = content;
     return s;
 }
