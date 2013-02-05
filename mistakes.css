@@ -1,41 +1,40 @@
-.sl-wrap {
+body {
+  margin:0;
+  padding:0;
 }
 
 .sl-left {
-  position:absolute;
-  top:0;
-  right:50%;
-  left:0;
-  bottom:0;
-  border-right:1px solid #000;
+  display:block;
+  float:left;
+  position:relative;
+  width:50%;
 }
 
 .sl-right {
+  display:block;
+  float:left;
   background:#eee;
-  position:absolute;
-  top:0;
-  left:50%;
-  bottom:0;
-  right:0;
+  position:relative;
+  width:50%;
   height: auto;
   overflow: visible;
 }
 
 .readme {
-    font:normal 14px/20px 'Helvetica';
-    text-decoration:none;
-    background:#7E0000;
-    padding:10px;
-    color:#fff;
-    border-radius:10px;
-    position:absolute;
-    right:10px;
-    top:10px;
-    -webkit-transition:background 200ms;
+  font:normal 14px/20px 'Helvetica';
+  text-decoration:none;
+  background:#7E0000;
+  padding:10px;
+  color:#fff;
+  border-radius:10px;
+  position:absolute;
+  right:10px;
+  top:10px;
+  -webkit-transition:background 200ms;
 }
 
 .readme:hover {
-    background:#CE0000;
+  background:#CE0000;
 }
 
 /* codemirror */
