@@ -1,4 +1,4 @@
-## [sealion](http://macwright.org/mistakes/)
+## [MISTAKES](http://macwright.org/mistakes/)
 
 live-coding, oriented towards giving presentations about programming and
 showing what you mean.
