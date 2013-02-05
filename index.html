@@ -2,17 +2,20 @@
 <html>
   <head>
     <meta http-equiv='content-type' content='text/html; charset=utf-8' />
-    <title>sealion</title>
+    <title>mistakes</title>
     <meta name='author' content='Tom MacWright' />
     <meta name='description' content='a line-oriented javascript learning environment' />
+    <link href='mistakes.css' rel='stylesheet' />
+    <script src='js/codemirror.js'></script>
+    <script src='js/javascript.js'></script>
+    <script src='js/site.js'></script>
   </head>
   <body>
     <div id='wrap'></div>
     <a class='readme' target="_blank" href='#4679533'>?</a>
-    <script src='mistakes.js'></script>
 <script>
 
-sealion(document.getElementById('wrap'));
+mistakes(document.getElementById('wrap'));
 
 if (window.location.hash) {
     gist(window.location.hash.substring(1));

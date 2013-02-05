@@ -26,23 +26,7 @@ function xhr(url, callback) {
     x.send();
 }
 
-var hasstyle = false,
-    ssurl = 'http://macwright.org/mistakes/mistakes.css';
-
-for (var ss = 0; ss < document.styleSheets.length; ss++) {
-    if (document.styleSheets[ss].href == ssurl) {
-        hasstyle = true;
-    }
-}
-
-if (!hasstyle) {
-    var link = document.head.appendChild(document.createElement('link'));
-    link.rel = 'stylesheet';
-    link.type = 'text/css';
-    link.href = ssurl;
-}
-
-function sealion(div) {
+function mistakes(div) {
     var s = {};
 
     var inner = div.innerHTML;
