@@ -15,14 +15,14 @@
     <a class='readme' target="_blank" href='#4679533'>?</a>
 <script>
 
-mistakes(document.getElementById('wrap'));
+var m = mistakes(document.getElementById('wrap'));
 
 if (window.location.hash) {
-    gist(window.location.hash.substring(1));
+    m.gist(window.location.hash.substring(1));
 }
 
 window.onhashchange = function() {
-    gist(window.location.hash.substring(1));
+    m.gist(window.location.hash.substring(1));
 };
 
 </script>
