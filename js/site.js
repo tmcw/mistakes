@@ -15,8 +15,8 @@ function xhr(url, callback) {
     x.send();
 }
 
-function mistakes(div) {
-    var s = {};
+function mistakes(__div) {
+    var __s = {};
 
     function require(x) {
         var scripts = document.head.getElementsByTagName('script');
@@ -25,77 +25,78 @@ function mistakes(div) {
             if (scripts[i].src == x) return 'loaded';
         }
         var scr = document.head.appendChild(document.createElement('script'));
-        scr.onload = runCodes;
+        scr.onload = __runCodes;
         scr.src = x;
     }
 
-    function runCodes() {
-        var v = editor.getValue().split('\n');
-        var res = '';
-        for (var i = 0; i < v.length; i++) {
-            if (v[i]) {
+    function __runCodes() {
+        var ____v = __editor.getValue().split('\n');
+        var ____res = '';
+        for (var ____i = 0; ____i < ____v.length; ____i++) {
+            var ____line = ____v[____i];
+            if (____line) {
                 try {
-                    if (v[i].match(/^\s*?\/\//)) {
-                        res += '\n';
+                    if (____line.match(/^\s*?\/\//)) {
+                        ____res += '\n';
                     } else {
-                        res += stringify((function() {
-                            return eval(v.slice(0,i+1).join('\n'));
-                        })()) + '\n';
+                        ____res += stringify((function(____js) {
+                            return eval(____js);
+                        })(____v.slice(0, ____i + 1).join('\n'))) + '\n';
                     }
                 } catch(e) {
-                    if (!(e instanceof SyntaxError)) res += e;
-                    else res += '\n';
+                    if (!(e instanceof SyntaxError)) ____res += e;
+                    else ____res += '\n';
                 }
-            } else res += '\n';
+            } else ____res += '\n';
         }
-        result.setValue(res);
+        __result.setValue(____res);
     }
 
-    function gist(id) {
+    function __gist(id) {
         xhr("https://api.github.com/gists/" + id, function() {
             var r = JSON.parse(this.response);
             for (var k in r.files) {
-                return content(r.files[k].content);
+                return __content(r.files[k].content);
             }
         });
     }
 
-    function content(x) {
-        editor.setValue(x);
-        return s;
+    function __content(x) {
+        __editor.setValue(x);
+        return __s;
     }
 
-    var inner = div.innerHTML;
-    div.innerHTML = '';
-    div.className = div.className + ' sl-wrap';
+    var __inner = __div.innerHTML;
+    __div.innerHTML = '';
+    __div.className = __div.className + ' sl-wrap';
 
-    var left = div.appendChild(document.createElement('div')),
-        right = div.appendChild(document.createElement('right')),
-        code = left.appendChild(document.createElement('textarea')),
-        results = right.appendChild(document.createElement('pre'));
+    var __left = __div.appendChild(document.createElement('div')),
+        __right = __div.appendChild(document.createElement('right')),
+        __code = __left.appendChild(document.createElement('textarea')),
+        __results = __right.appendChild(document.createElement('pre'));
 
-    code.value = inner;
+    __code.value = __inner;
 
-    left.className = 'sl-left';
-    right.className = 'sl-right';
-    code.className = 'code';
-    results.className = 'results';
+    __left.className = 'sl-left';
+    __right.className = 'sl-right';
+    __code.className = 'code';
+    __results.className = 'results';
 
-    var editor = CodeMirror.fromTextArea(code, {
+    var __editor = CodeMirror.fromTextArea(__code, {
         mode: 'javascript',
         matchBrackets: true,
-        onChange: runCodes,
+        onChange: __runCodes,
         tabSize: 2,
         smartIndent: false
     });
 
-    var result = CodeMirror.fromTextArea(results, {
+    var __result = CodeMirror.fromTextArea(__results, {
         mode: 'javascript',
         tabSize: 2,
         readOnly: true
     });
 
-    s.gist = gist;
-    s.content = content;
-    return s;
+    __s.gist = __gist;
+    __s.content = __content;
+    return __s;
 }
