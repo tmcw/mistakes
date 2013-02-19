@@ -53,12 +53,18 @@ function mistakes(__div) {
     }
 
     function __gist(id) {
-        xhr("https://api.github.com/gists/" + id, function() {
-            var r = JSON.parse(this.response);
-            for (var k in r.files) {
-                return __content(r.files[k].content);
-            }
-        });
+        if (id.indexOf('.js') !== -1) {
+            xhr("local/" + id, function() {
+                return __content(this.response);
+            });
+        } else {
+            xhr("https://api.github.com/gists/" + id, function() {
+                var r = JSON.parse(this.response);
+                for (var k in r.files) {
+                    return __content(r.files[k].content);
+                }
+            });
+        }
     }
 
     function __content(x) {
