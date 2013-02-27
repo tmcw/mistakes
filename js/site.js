@@ -93,7 +93,7 @@ function mistakes(__div) {
         matchBrackets: true,
         onChange: __runCodes,
         tabSize: 2,
-        smartIndent: false
+        smartIndent: true
     });
 
     var __result = CodeMirror.fromTextArea(__results, {
