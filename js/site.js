@@ -93,6 +93,7 @@ function mistakes(__div) {
         matchBrackets: true,
         onChange: __runCodes,
         tabSize: 2,
+        autofocus: true,
         smartIndent: true
     });
 

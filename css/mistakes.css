@@ -20,20 +20,28 @@ body {
   overflow: visible;
 }
 
-.readme {
+.buttons {
+  position:absolute;
+  right:10px;
+  top:20px;
+}
+
+.button:first-child {
+  border-radius:10px 0 0 10px;
+  border-right:1px solid #550B0B;
+}
+
+.button {
   font:normal 14px/20px 'Helvetica';
   text-decoration:none;
   background:#7E0000;
   padding:10px;
   color:#fff;
-  border-radius:10px;
-  position:absolute;
-  right:10px;
-  top:10px;
-  -webkit-transition:background 200ms;
+  -webkit-transition:background 100ms;
+  border-radius:0 10px 10px 0;
 }
 
-.readme:hover {
+.button:hover {
   background:#CE0000;
 }
 

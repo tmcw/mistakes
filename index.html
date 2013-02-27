@@ -5,16 +5,20 @@
     <title>mistakes</title>
     <meta name='author' content='Tom MacWright' />
     <meta name='description' content='a line-oriented javascript learning environment' />
-    <link href='mistakes.css' rel='stylesheet' />
+    <link href='css/mistakes.css' rel='stylesheet' />
+    <!--
     <script src='js/codemirror.js'></script>
     <script src='js/javascript.js'></script>
     <script src='js/site.js'></script>
+    -->
+    <script src='mistakes.js'></script>
   </head>
   <body>
     <div id='wrap'></div>
-    <a class='readme' target="_blank" href='#4679533'>?</a>
+    <div class='buttons'>
+        <a class='button' target="_blank" href='#4679533'>?</a><a class='button' target="_blank" href='https://github.com/tmcw/mistakes'>{}</a>
+    </div>
 <script>
-
 var m = mistakes(document.getElementById('wrap'));
 
 if (window.location.hash) {
@@ -26,9 +30,7 @@ if (window.location.hash) {
 window.onhashchange = function() {
     m.gist(window.location.hash.substring(1));
 };
-
 </script>
-
     <script type="text/javascript">
       var _gauges = _gauges || [];
       (function() {
