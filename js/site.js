@@ -53,6 +53,14 @@ function mistakes(__div) {
     }
 
     function __gist(id) {
+        // Ignore files that are clearly not javascript files - they
+        // have a file extension and that is not .js. This allows
+        // users to add README.md to gists.
+        function isjs(x) {
+            var n = x.split('.');
+            if (n.length > 1 && n[n.length - 1] !== 'js') return false;
+            return true;
+        }
         if (id.indexOf('.js') !== -1) {
             xhr("local/" + id, function() {
                 return __content(this.response);
@@ -61,7 +69,7 @@ function mistakes(__div) {
             xhr("https://api.github.com/gists/" + id, function() {
                 var r = JSON.parse(this.response);
                 for (var k in r.files) {
-                    return __content(r.files[k].content);
+                    if (isjs(k)) return __content(r.files[k].content);
                 }
             });
         }
