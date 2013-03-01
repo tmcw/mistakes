@@ -5,12 +5,51 @@ showing what you mean.
 
 ![](http://farm9.staticflickr.com/8050/8440178754_8e7f5906cc_z.jpg)
 
-Internally, it's very simple:
+## Process
 
 1. Split the input by line
 2. `eval()` `line -> n` for every line, `JSON.stringify` and display on the right
 
-# Local
+## Require
+
+There is one additional 'feature' of the interface. A magic function called
+`require` will include a javascript file by URL, on the page. Here's
+[an example](http://macwright.org/mistakes/#5051892). Require is simple:
+here it is:
+
+```js
+function require(x) {
+    var scripts = document.head.getElementsByTagName('script');
+    // do not re-add scripts
+    for (var i = 0; i < scripts.length; i++) {
+        if (scripts[i].src == x) return 'loaded';
+    }
+    var scr = document.head.appendChild(document.createElement('script'));
+    scr.onload = __runCodes;
+    scr.src = x;
+}
+```
+
+## Gists
+
+mistakes supports loading from [GitHub Gists](https://gist.github.com/) to
+help you share code better. When you see a URL like http://macwright.org/mistakes/#5051892
+that means it's loading the gist at https://gist.github.com/tmcw/5051892.
+
+It works with anyone's gists. The expectation is that gists contain a single
+Javascript file - you can add a README too if you give it a file extension
+other than `.js`, like if you name it `README.md`.
+
+## Notes
+
+There are a few 'principles' of mistakes:
+
+Mistakes _does not do magic_. There is no complicated code compilation or parsing -
+it's just `eval`. What works in Javascript works in mistakes. Therefore,
+there's very little code - less than 200 sloc if you don't count [CodeMirror](http://codemirror.net/),
+the editor component.
+
+## Local
 
 There are three rules of presenting:
 
