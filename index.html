@@ -5,6 +5,7 @@
     <title>mistakes</title>
     <meta name='author' content='Tom MacWright' />
     <meta name='description' content='a line-oriented javascript learning environment' />
+    <meta property='og:site_name' content='mistakes'/>
     <link href='css/mistakes.css' rel='stylesheet' />
     <!--
     <script src='js/codemirror.js'></script>
@@ -16,7 +17,7 @@
   <body>
     <div id='wrap'></div>
     <div class='buttons'>
-        <a class='button' target="_blank" href='#4679533'>?</a><a class='button' target="_blank" href='https://github.com/tmcw/mistakes'>{}</a>
+        <a title='What is this?' class='button' target="_blank" href='#4679533'>?</a><a title='Fork this project on GitHub and make it better' class='button' target="_blank" href='https://github.com/tmcw/mistakes'>{}</a>
     </div>
 <script>
 var m = mistakes(document.getElementById('wrap'));
@@ -31,18 +32,18 @@ window.onhashchange = function() {
     m.gist(window.location.hash.substring(1));
 };
 </script>
-    <script type="text/javascript">
-      var _gauges = _gauges || [];
-      (function() {
-        var t   = document.createElement('script');
-        t.type  = 'text/javascript';
-        t.async = true;
-        t.id    = 'gauges-tracker';
-        t.setAttribute('data-site-id', '4e36eb1ef5a1f53d6f000001');
-        t.src = '//secure.gaug.es/track.js';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(t, s);
-      })();
-    </script>
-  </body>
+<script type="text/javascript">
+var _gauges = _gauges || [];
+(function() {
+  var t   = document.createElement('script');
+  t.type  = 'text/javascript';
+  t.async = true;
+  t.id    = 'gauges-tracker';
+  t.setAttribute('data-site-id', '4e36eb1ef5a1f53d6f000001');
+  t.src = '//secure.gaug.es/track.js';
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(t, s);
+})();
+</script>
+</body>
 </html>

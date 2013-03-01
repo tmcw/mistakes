@@ -32,7 +32,7 @@ body {
 }
 
 .button {
-  font:normal 14px/20px 'Helvetica';
+  font-family: 'Helvetica';
   text-decoration:none;
   background:#7E0000;
   padding:10px;
@@ -48,8 +48,15 @@ body {
 /* codemirror */
 .CodeMirror {
   line-height: 2em;
-  font-size:20px;
   font-family: 'Source Code Pro', 'Monaco', 'Consolas', monospace;
+}
+
+.button { font-size: 14px; }
+.CodeMirror { font-size:20px; }
+
+@media all and (max-width: 800px) {
+  .CodeMirror { font-size: 14px; }
+  .button { font-size: 12px; }
 }
 
 .CodeMirror-scroll {
@@ -137,7 +144,7 @@ div.CodeMirror-selected { background: #d9d9d9; }
 .cm-s-default span.cm-variable-3 {color: #085;}
 .cm-s-default span.cm-property {color: black;}
 .cm-s-default span.cm-operator {color: black;}
-.cm-s-default span.cm-comment {color: #a50;}
+.cm-s-default span.cm-comment {color: #09a;}
 .cm-s-default span.cm-string {color: #a11;}
 .cm-s-default span.cm-string-2 {color: #f50;}
 .cm-s-default span.cm-meta {color: #555;}
@@ -157,5 +164,5 @@ span.cm-em {font-style: italic;}
 span.cm-emstrong {font-style: italic; font-weight: bold;}
 span.cm-link {text-decoration: underline;}
 
-div.CodeMirror span.CodeMirror-matchingbracket {color: #0f0;}
+div.CodeMirror span.CodeMirror-matchingbracket {color: #c08;}
 div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
