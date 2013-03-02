@@ -1,9 +1,21 @@
+// slightly more advanced JSON.stringify that
+// presents functions in a slightly nicer way
 function stringify(x) {
+
+    function typeComment(x) {
+        if (x === null || x === undefined) return '';
+        if (x.constructor.name) {
+            return ' // ' + x.constructor.name;
+        } else return '';
+    }
+
     if (typeof x == 'function') {
-        return '[function]';
+        return '[function' +
+            // show function names, if available
+            (x.name ? (' ' + x.name) : '') + ']';
     } else {
         try {
-            return JSON.stringify(x);
+            return JSON.stringify(x) + typeComment(x);
         } catch(e) { return ''; }
     }
 }
@@ -18,9 +30,11 @@ function xhr(url, callback) {
 function mistakes(__div) {
     var __s = {};
 
+    // include a script programmatically, by appending it
+    // to the head of the page. guards against re-insertion,
+    // and returns 'loaded' when successful.
     function require(x) {
         var scripts = document.head.getElementsByTagName('script');
-        // do not re-add scripts
         for (var i = 0; i < scripts.length; i++) {
             if (scripts[i].src == x) return 'loaded';
         }
@@ -52,13 +66,22 @@ function mistakes(__div) {
         __result.setValue(____res);
     }
 
+    function __showGistButton(id) {
+        var button = document.getElementById('gist-button');
+        button.style.display = 'inline';
+        button.href = 'https://gist.github.com/' + id;
+    }
+
     function __gist(id) {
-        // Ignore files that are clearly not javascript files - they
-        // have a file extension and that is not .js. This allows
-        // users to add README.md to gists.
+        // Ignore files that are clearly not javascript files.
+        //
+        // * Have an extension and it is not .txt or .js
+        // * Say 'readme'
         function isjs(x) {
-            var n = x.split('.');
-            if (n.length > 1 && n[n.length - 1] !== 'js') return false;
+            if (x.match(/readme/gi)) return false;
+            var n = x.split('.'),
+                ext = n[n.length - 1];
+            if (n.length > 1 && ext !== 'js' && ext !== 'txt') return false;
             return true;
         }
         if (id.indexOf('.js') !== -1) {
@@ -67,6 +90,7 @@ function mistakes(__div) {
             });
         } else {
             xhr("https://api.github.com/gists/" + id, function() {
+                __showGistButton(id);
                 var r = JSON.parse(this.response);
                 for (var k in r.files) {
                     if (isjs(k)) return __content(r.files[k].content);

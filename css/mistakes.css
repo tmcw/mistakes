@@ -23,22 +23,30 @@ body {
 .buttons {
   position:absolute;
   right:10px;
-  top:20px;
+  top:15px;
 }
 
 .button:first-child {
-  border-radius:10px 0 0 10px;
-  border-right:1px solid #550B0B;
+  border-radius:2px 0 0 2px;
+}
+
+.button:last-child {
+  border-radius:0 2px 2px 0;
+  border-right:none;
 }
 
 .button {
   font-family: 'Helvetica';
   text-decoration:none;
   background:#7E0000;
-  padding:10px;
+  border-right:1px solid #550B0B;
+  padding:5px;
   color:#fff;
   -webkit-transition:background 100ms;
-  border-radius:0 10px 10px 0;
+}
+
+#gist-button {
+  display:none;
 }
 
 .button:hover {
