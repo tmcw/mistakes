@@ -1,47 +1,35 @@
 var restring = require('restring'),
     jsonify = require('jsonify'),
     http = require('http'),
+    incrementalEval = require('incremental-eval'),
     liveRequire = require('live-require');
 
 function xhr(opts, callback) {
     var o = '';
     http.get(opts, function(res) {
-        res.on('data', function(buf) {
-                o += buf;
-            })
-            .on('end', function(buf) {
-                callback(o);
-            });
+        res.on('data', function(buf) { o += buf; })
+            .on('end', function(buf) { callback(o); });
     });
 }
 
 function mistakes(__div) {
-    var __s = {},
-        require = function(x) {
-            return liveRequire(x, __runCodes);
-        };
-
+    var __s = {};
     function __runCodes() {
-        var ____v = __editor.getValue().split('\n');
-        var ____res = '';
-        for (var ____i = 0; ____i < ____v.length; ____i++) {
-            var ____line = ____v[____i];
-            if (____line) {
-                try {
-                    if (____line.match(/^\s*?\/\//)) {
-                        ____res += '\n';
-                    } else {
-                        ____res += restring((function(____js) {
-                            return eval(____js);
-                        })(____v.slice(0, ____i + 1).join('\n'))) + '\n';
-                    }
-                } catch(e) {
-                    if (!(e instanceof SyntaxError)) ____res += e;
-                    else ____res += '\n';
+        var __r = incrementalEval(__editor.getValue(), {
+                require: function(x) {
+                    return liveRequire(x, __runCodes);
                 }
-            } else ____res += '\n';
+            }),
+            __res = '';
+        for (var __i = 0; __i < __r.length; __i++) {
+            if (__r[__i] !== undefined &&
+                !(__r[__i] instanceof SyntaxError)) {
+                __res += restring(__r[__i]) + '\n';
+            } else {
+                __res += '\n';
+            }
         }
-        __result.setValue(____res);
+        __result.setValue(__res);
     }
 
     function __showGistButton(id) {

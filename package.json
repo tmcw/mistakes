@@ -19,6 +19,7 @@
     "restring": "0.0.0",
     "live-require": "0.0.0",
     "codemirror": "https://github.com/marijnh/CodeMirror/archive/v3.1.tar.gz",
-    "jsonify": "0.0.0"
+    "jsonify": "0.0.0",
+    "incremental-eval": "0.0.1"
   }
 }
