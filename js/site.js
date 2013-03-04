@@ -1,5 +1,4 @@
 var restring = require('restring');
-var CodeMirror = require('codemirror');
 var liveRequire = require('live-require');
 
 function xhr(url, callback) {
