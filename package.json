@@ -18,6 +18,7 @@
     "uglify-js": "~2.2.4",
     "restring": "0.0.0",
     "live-require": "0.0.0",
-    "codemirror": "https://github.com/marijnh/CodeMirror/archive/v3.1.tar.gz"
+    "codemirror": "https://github.com/marijnh/CodeMirror/archive/v3.1.tar.gz",
+    "jsonify": "0.0.0"
   }
 }

@@ -7,6 +7,8 @@ all: mistakes.js js/bundle.js
 
 js/bundle.js: package.json
 	browserify -r restring \
+		-r jsonify \
+		-r http \
 		-r live-require > js/bundle.js
 
 mistakes.js: \

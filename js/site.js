@@ -1,16 +1,25 @@
-var restring = require('restring');
-var liveRequire = require('live-require');
+var restring = require('restring'),
+    jsonify = require('jsonify'),
+    http = require('http'),
+    liveRequire = require('live-require');
 
-function xhr(url, callback) {
-    var x = new XMLHttpRequest();
-    x.open("GET", url, true);
-    x.onload = callback;
-    x.send();
+function xhr(opts, callback) {
+    var o = '';
+    http.get(opts, function(res) {
+        res.on('data', function(buf) {
+                o += buf;
+            })
+            .on('end', function(buf) {
+                callback(o);
+            });
+    });
 }
 
 function mistakes(__div) {
     var __s = {},
-        require = liveRequire;
+        require = function(x) {
+            return liveRequire(x, __runCodes);
+        };
 
     function __runCodes() {
         var ____v = __editor.getValue().split('\n');
@@ -38,7 +47,7 @@ function mistakes(__div) {
     function __showGistButton(id) {
         var button = document.getElementById('gist-button');
         button.style.display = 'inline';
-        button.href = 'https://gist.github.com/' + id;
+        button.href = 'http://gist.github.com/' + id;
     }
 
     function __gist(id) {
@@ -54,13 +63,17 @@ function mistakes(__div) {
             return true;
         }
         if (id.indexOf('.js') !== -1) {
-            xhr("local/" + id, function() {
-                return __content(this.response);
+            xhr({ path: '/local/' + id }, function (res) {
+                return __content(res);
             });
         } else {
-            xhr("https://api.github.com/gists/" + id, function() {
+            xhr({ path: '/gists/' + id,
+                host: 'api.github.com',
+                port: 443,
+                scheme: 'https'
+            }, function(res) {
                 __showGistButton(id);
-                var r = JSON.parse(this.response);
+                var r = jsonify.parse(res);
                 for (var k in r.files) {
                     if (isjs(k)) return __content(r.files[k].content);
                 }
