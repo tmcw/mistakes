@@ -1,5 +1,5 @@
 {
-  "name": "sealion",
+  "name": "mistakes",
   "version": "0.0.0",
   "description": "live-coding, oriented towards giving presentations about programming and showing what you mean.",
   "main": "index.js",
@@ -15,6 +15,9 @@
   "readmeFilename": "README.md",
   "gitHead": "184b0f281d06ce2f365d89c0dcd4268a7b6223cb",
   "dependencies": {
-    "uglify-js": "~2.2.4"
+    "uglify-js": "~2.2.4",
+    "restring": "0.0.0",
+    "live-require": "0.0.0",
+    "codemirror": "https://github.com/marijnh/CodeMirror/archive/v3.1.tar.gz"
   }
 }

@@ -1,24 +1,6 @@
-// slightly more advanced JSON.stringify that
-// presents functions in a slightly nicer way
-function stringify(x) {
-
-    function typeComment(x) {
-        if (x === null || x === undefined) return '';
-        if (x.constructor.name) {
-            return ' // ' + x.constructor.name;
-        } else return '';
-    }
-
-    if (typeof x == 'function') {
-        return '[function' +
-            // show function names, if available
-            (x.name ? (' ' + x.name) : '') + ']';
-    } else {
-        try {
-            return JSON.stringify(x) + typeComment(x);
-        } catch(e) { return ''; }
-    }
-}
+var restring = require('restring');
+var CodeMirror = require('codemirror');
+var liveRequire = require('live-require');
 
 function xhr(url, callback) {
     var x = new XMLHttpRequest();
@@ -28,20 +10,8 @@ function xhr(url, callback) {
 }
 
 function mistakes(__div) {
-    var __s = {};
-
-    // include a script programmatically, by appending it
-    // to the head of the page. guards against re-insertion,
-    // and returns 'loaded' when successful.
-    function require(x) {
-        var scripts = document.head.getElementsByTagName('script');
-        for (var i = 0; i < scripts.length; i++) {
-            if (scripts[i].src == x) return 'loaded';
-        }
-        var scr = document.head.appendChild(document.createElement('script'));
-        scr.onload = __runCodes;
-        scr.src = x;
-    }
+    var __s = {},
+        require = liveRequire;
 
     function __runCodes() {
         var ____v = __editor.getValue().split('\n');
@@ -53,7 +23,7 @@ function mistakes(__div) {
                     if (____line.match(/^\s*?\/\//)) {
                         ____res += '\n';
                     } else {
-                        ____res += stringify((function(____js) {
+                        ____res += restring((function(____js) {
                             return eval(____js);
                         })(____v.slice(0, ____i + 1).join('\n'))) + '\n';
                     }

@@ -3,10 +3,13 @@
 NODE_PATH ?= ./node_modules
 JS_COMPILER = uglifyjs
 
-all: mistakes.js
+all: mistakes.js js/bundle.js
+
+js/bundle.js: package.json
+	browserify -r restring \
+		-r live-require > js/bundle.js
 
 mistakes.js: \
-	js/codemirror.js \
 	js/javascript.js \
 	js/site.js \
 
