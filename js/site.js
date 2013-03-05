@@ -38,6 +38,12 @@ function mistakes(__div) {
         button.href = 'http://gist.github.com/' + id;
     }
 
+    function __showIframeButton(id) {
+        var button = document.getElementById('iframe-button');
+        button.style.display = 'inline';
+        button.href = window.location;
+    }
+
     function __gist(id) {
         // Ignore files that are clearly not javascript files.
         //
@@ -90,12 +96,14 @@ function mistakes(__div) {
     __code.className = 'code';
     __results.className = 'results';
 
+    if (window !== window.top) __showIframeButton();
+
     var __editor = CodeMirror.fromTextArea(__code, {
         mode: 'javascript',
         matchBrackets: true,
         onChange: __runCodes,
         tabSize: 2,
-        autofocus: true,
+        autofocus: (window === window.top),
         smartIndent: true
     });
 

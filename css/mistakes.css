@@ -45,7 +45,7 @@ body {
   -webkit-transition:background 100ms;
 }
 
-#gist-button {
+#gist-button, #iframe-button {
   display:none;
 }
 
