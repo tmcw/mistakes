@@ -1,34 +1,17 @@
-## [MISTAKES](http://macwright.org/mistakes/)
+## [mistakes.io](http://macwright.org/mistakes/)
 
 live-coding, oriented towards giving presentations about programming and
 showing what you mean.
 
 ![](http://farm9.staticflickr.com/8050/8440178754_8e7f5906cc_z.jpg)
 
-## Process
-
-1. Split the input by line
-2. `eval()` `line -> n` for every line, `JSON.stringify` and display on the right
-
 ## Require
+
+[require functionality is powered by live-require](https://github.com/tmcw/live-require)
 
 There is one additional 'feature' of the interface. A magic function called
 `require` will include a javascript file by URL, on the page. Here's
-[an example](http://macwright.org/mistakes/#5051892). Require is simple:
-here it is:
-
-```js
-function require(x) {
-    var scripts = document.head.getElementsByTagName('script');
-    // do not re-add scripts
-    for (var i = 0; i < scripts.length; i++) {
-        if (scripts[i].src == x) return 'loaded';
-    }
-    var scr = document.head.appendChild(document.createElement('script'));
-    scr.onload = __runCodes;
-    scr.src = x;
-}
-```
+[an example](http://macwright.org/mistakes/#5051892).
 
 ## Gists
 
@@ -45,7 +28,8 @@ other than `.js`, like if you name it `README.md`.
 There are a few 'principles' of mistakes:
 
 Mistakes _does not do magic_. There is no complicated code compilation or parsing -
-it's just `eval`. What works in Javascript works in mistakes. Therefore,
+it's just `eval`. See the [incremental eval module, which powers this part of mistakes](https://github.com/tmcw/incremental-eval).
+What works in Javascript works in mistakes. Therefore,
 there's very little code - less than 200 sloc if you don't count [CodeMirror](http://codemirror.net/),
 the editor component.
 

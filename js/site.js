@@ -80,19 +80,13 @@ function mistakes(__div) {
         return __s;
     }
 
-    var __inner = __div.innerHTML;
-    __div.innerHTML = '';
-    __div.className = __div.className + ' sl-wrap';
-
     var __left = __div.appendChild(document.createElement('div')),
         __right = __div.appendChild(document.createElement('right')),
         __code = __left.appendChild(document.createElement('textarea')),
-        __results = __right.appendChild(document.createElement('pre'));
+        __results = __right.appendChild(document.createElement('textarea'));
 
-    __code.value = __inner;
-
-    __left.className = 'sl-left';
-    __right.className = 'sl-right';
+    __left.className = 'left';
+    __right.className = 'right';
     __code.className = 'code';
     __results.className = 'results';
 
@@ -101,17 +95,21 @@ function mistakes(__div) {
     var __editor = CodeMirror.fromTextArea(__code, {
         mode: 'javascript',
         matchBrackets: true,
-        onChange: __runCodes,
         tabSize: 2,
         autofocus: (window === window.top),
         smartIndent: true
     });
 
+    __editor.on('change', __runCodes);
+
     var __result = CodeMirror.fromTextArea(__results, {
         mode: 'javascript',
         tabSize: 2,
-        readOnly: true
+        readOnly: 'nocursor'
     });
+
+    __editor.setOption("theme", 'mistakes');
+    __result.setOption("theme", 'mistakes');
 
     __s.gist = __gist;
     __s.content = __content;
