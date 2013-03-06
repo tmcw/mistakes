@@ -9,9 +9,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/tmcw/sealion.git"
+    "url": "git://github.com/tmcw/mistakes.git"
   },
-  "author": "",
+  "author": "Tom MacWright <tom@macwright.org>",
   "license": "BSD",
   "readmeFilename": "README.md",
   "gitHead": "184b0f281d06ce2f365d89c0dcd4268a7b6223cb",
