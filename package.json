@@ -4,7 +4,8 @@
   "description": "live-coding, oriented towards giving presentations about programming and showing what you mean.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./node_modules/browservefy/bin/browservefy js/site.js:js/bundle.js 8080 --browserify=./node_modules/browserify/bin/cmd.js -- -d"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,9 @@
     "jsonify": "0.0.0",
     "incremental-eval": "0.0.1",
     "codemirror": "https://github.com/tmcw/CodeMirror/archive/module-export.tar.gz"
+  },
+  "devDependencies": {
+    "browserify": "2.4.3",
+    "browservefy": "0.0.8"
   }
 }

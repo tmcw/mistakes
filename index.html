@@ -19,21 +19,7 @@
     <div class='buttons'>
         <a title='What is this?' class='button' target='_blank' href='#4679533'>?</a><a title='Expand this window' class='button' id='iframe-button' target='_blank' href=''>⇗</a><a title='This Gist' id='gist-button' class='button' target="_blank" href=''>#</a><a title='Fork this project on GitHub and make it better' class='button' target='_blank' href='https://github.com/tmcw/mistakes'>{}</a>
     </div>
-    <script src='js/bundle.min.js'></script>
-    <script>var CodeMirror = require('codemirror');</script>
-    <script src='js/javascript.js'></script>
-    <script src='js/site.js'></script>
-    <script>
-    var m = mistakes(document.getElementById('wrap'));
-    if (window.location.hash) {
-        m.gist(window.location.hash.substring(1));
-    } else {
-        m.content('"hello, world"; // edit this to begin');
-    }
-    window.onhashchange = function() {
-        m.gist(window.location.hash.substring(1));
-    };
-    </script>
+    <script src='js/bundle.js'></script>
     <script type="text/javascript">
       var _gauges = _gauges || [];
       (function() {

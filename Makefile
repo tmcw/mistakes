@@ -5,13 +5,8 @@ JS_COMPILER = uglifyjs
 
 all: js/bundle.min.js
 
-js/bundle.js: package.json
-	browserify -r restring \
-		-r jsonify \
-		-r codemirror \
-		-r incremental-eval \
-		-r http \
-		-r live-require > js/bundle.js
+js/bundle.js:
+	browserify js/site.js > js/bundle.js
 
 js/bundle.min.js: js/bundle.js
-	uglifyjs js/bundle.js -c -m -o js/bundle.min.js
+	uglifyjs js/bundle.js -c -m > js/bundle.min.js
