@@ -12,15 +12,18 @@
     <link rel='icon' type='image/x-icon' href='/favicon.png' />
   </head>
   <body>
-    <div id='wrap'>
-        <div class='bg-left'></div>
-        <div class='bg-right'></div>
+    <div id='mistakes' class='clearfix'>
+      <div class='heading'>
+        <h2><a title='Expand this window' id='title' target='_blank' href=''></a></h2>
+        <div class='buttons'>
+          <a title='This Gist' id='gist-button' class='github button' target="_blank" href=''>#</a>
+        </div>
+      </div>
+      <span class='about'>Powered by <a title='What is this?' target='_blank' href='//macwright.org/mistakes/#4679533'>Mistakes</a></span>
     </div>
-    <div class='buttons'>
-        <a title='What is this?' class='button' target='_blank' href='#4679533'>?</a><a title='Expand this window' class='button' id='iframe-button' target='_blank' href=''>⇗</a><a title='This Gist' id='gist-button' class='button' target="_blank" href=''>#</a><a title='Fork this project on GitHub and make it better' class='button' target='_blank' href='https://github.com/tmcw/mistakes'>{}</a>
-    </div>
+
     <script src='js/bundle.js'></script>
-    <script type="text/javascript">
+    <script>
       var _gauges = _gauges || [];
       (function() {
         var t   = document.createElement('script');

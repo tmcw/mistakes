@@ -12,7 +12,7 @@ function xhr(opts, callback) {
     var o = '';
     http.get(opts, function(res) {
         res.on('data', function(buf) { o += buf; })
-            .on('end', function(buf) { callback(o); });
+           .on('end', function(buf) { callback(o); });
     });
 }
 
@@ -38,14 +38,13 @@ function mistakes(__div) {
 
     function __showGistButton(id) {
         var button = document.getElementById('gist-button');
-        button.style.display = 'inline';
         button.href = 'http://gist.github.com/' + id;
     }
 
-    function __showIframeButton(id) {
-        var button = document.getElementById('iframe-button');
-        button.style.display = 'inline';
-        button.href = window.location;
+    function __showIframeButton(id, fileName) {
+        var filename = document.getElementById('title');
+            filename.href = '//mistakes.io/#' + id;
+            filename.innerHTML = fileName;
     }
 
     function __gist(id) {
@@ -72,29 +71,29 @@ function mistakes(__div) {
             }, function(res) {
                 __showGistButton(id);
                 var r = jsonify.parse(res);
+
                 for (var k in r.files) {
-                    if (isjs(k)) return __content(r.files[k].content);
+                    if (isjs(k)) return __content(r.files[k].content, r.id, k);
                 }
             });
         }
     }
 
-    function __content(x) {
+    function __content(x, gist, fileName) {
         __editor.setValue(x);
+        __showIframeButton(gist, fileName);
         return __s;
     }
 
     var __left = __div.appendChild(document.createElement('div')),
-        __right = __div.appendChild(document.createElement('right')),
+        __right = __div.appendChild(document.createElement('div')),
         __code = __left.appendChild(document.createElement('textarea')),
         __results = __right.appendChild(document.createElement('textarea'));
 
-    __left.className = 'left';
-    __right.className = 'right';
+    __left.className = 'col left';
+    __right.className = 'col right';
     __code.className = 'code';
     __results.className = 'results';
-
-    if (window !== window.top) __showIframeButton();
 
     var __editor = CodeMirror.fromTextArea(__code, {
         mode: 'javascript',
@@ -112,8 +111,8 @@ function mistakes(__div) {
         readOnly: 'nocursor'
     });
 
-    __editor.setOption("theme", 'mistakes');
-    __result.setOption("theme", 'mistakes');
+    __editor.setOption('theme', 'mistakes');
+    __result.setOption('theme', 'mistakes');
 
     __s.gist = __gist;
     __s.content = __content;
