@@ -46,6 +46,7 @@ body {
   background-image:linear-gradient(to bottom, #fff, #f8f8f8);
   border-bottom:1px solid #d0d0d0;
   position:fixed;
+  top:0;left:0;right:0;
   height:35px;
   line-height:35px;
   width:100%;
