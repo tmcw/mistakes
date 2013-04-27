@@ -72,3 +72,8 @@ body {
   .CodeMirror { font-size: 14px !important; }
   .button { font-size: 12px; }
 }
+
+.loading {
+    background: url(loading.gif);
+    background-size:50px 50px;
+}

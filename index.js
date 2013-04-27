@@ -40,7 +40,9 @@ function mistakes(__div) {
         var content = editor.getValue();
         var h = new window.XMLHttpRequest();
 
+        document.body.className = 'loading';
         h.onload = function() {
+            document.body.className = '';
             var d = (JSON.parse(h.responseText));
             window.location.hash = '#' + d.id;
         };
@@ -91,11 +93,13 @@ function mistakes(__div) {
                 return __content(res);
             });
         } else {
+            document.body.className = 'loading';
             xhr({ path: '/gists/' + id,
                 host: 'api.github.com',
                 port: 443,
                 scheme: 'https'
             }, function(res) {
+                document.body.className = '';
                 __showGistButton(id);
                 var r = jsonify.parse(res);
                 for (var k in r.files) {
