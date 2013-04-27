@@ -36,6 +36,32 @@ function mistakes(__div) {
         __result.setValue(__res);
     }
 
+    function __saveAsGist(editor) {
+        var content = editor.getValue();
+        var h = new window.XMLHttpRequest();
+
+        h.onload = function() {
+            var d = (JSON.parse(h.responseText));
+            window.location.hash = '#' + d.id;
+        };
+
+        h.open('POST', 'https://api.github.com/gists', true);
+        h.send(JSON.stringify({
+            "description": "Gist from mistakes.io",
+            "public": true,
+            "files": {
+                "index.js": {
+                    "content": content
+                }
+            }
+        }));
+    }
+
+    document.getElementById('save-button').onclick = function() {
+        __saveAsGist(__editor);
+        return false;
+    };
+
     function __showGistButton(id) {
         var button = document.getElementById('gist-button');
         button.style.display = 'inline';
@@ -101,6 +127,10 @@ function mistakes(__div) {
         matchBrackets: true,
         tabSize: 2,
         autofocus: (window === window.top),
+        extraKeys: {
+            "Ctrl-S": __saveAsGist,
+            "Cmd-S": __saveAsGist
+        },
         smartIndent: true
     });
 
