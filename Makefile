@@ -5,7 +5,7 @@ JS_COMPILER = uglifyjs
 
 all: js/bundle.min.js
 
-js/bundle.js:
+js/bundle.js: js/site.js
 	browserify js/site.js > js/bundle.js
 
 js/bundle.min.js: js/bundle.js
