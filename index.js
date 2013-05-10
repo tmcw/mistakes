@@ -115,7 +115,7 @@ function mistakes(__div) {
     }
 
     var __left = __div.appendChild(document.createElement('div')),
-        __right = __div.appendChild(document.createElement('right')),
+        __right = __div.appendChild(document.createElement('div')),
         __code = __left.appendChild(document.createElement('textarea')),
         __results = __right.appendChild(document.createElement('textarea'));
 
