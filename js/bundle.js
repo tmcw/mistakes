@@ -2,11 +2,18 @@
 var mistakes = require('../');
 
 var m = mistakes(document.getElementById('wrap'));
+
 if (window.location.hash) {
     m.gist(window.location.hash.substring(1));
 } else {
-    m.content('"hello, world"; // edit this to begin');
+    var savedText = window.localStorage.savedText;
+    m.content(savedText || '"hello, world"; // edit this to begin');
 }
+
+window.setInterval(function() {
+    window.localStorage.savedText = m.content();
+}, 1000);
+
 window.onhashchange = function() {
     m.gist(window.location.hash.substring(1));
 };
@@ -441,7 +448,179 @@ module.exports = function(CodeMirror) {
   CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript: true });
 }
 
-},{}],4:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
+var restring = require('restring'),
+    jsonify = require('jsonify'),
+    http = require('http'),
+    incrementalEval = require('incremental-eval'),
+    liveRequire = require('live-require'),
+    CodeMirror = require('codemirror');
+
+// load JS support for CodeMirror
+require('./js/javascript')(CodeMirror);
+
+function xhr(opts, callback) {
+    var o = '';
+    http.get(opts, function(res) {
+        res.on('data', function(buf) { o += buf; })
+            .on('end', function(buf) { callback(o); });
+    });
+}
+
+function mistakes(__div) {
+    var __s = {};
+    function __runCodes() {
+        var __r = incrementalEval(__editor.getValue(), {
+                require: function(x) {
+                    return liveRequire(x, __runCodes);
+                }
+            }),
+            __res = '';
+        for (var __i = 0; __i < __r.length; __i++) {
+            if (__r[__i] !== undefined &&
+                !(__r[__i] instanceof SyntaxError)) {
+                __res += restring(__r[__i]) + '\n';
+            } else {
+                __res += '\n';
+            }
+        }
+        __result.setValue(__res);
+    }
+
+    function __saveAsGist(editor) {
+        var content = editor.getValue();
+        var h = new window.XMLHttpRequest();
+
+        document.body.className = 'loading';
+
+        h.onload = function() {
+            document.body.className = '';
+            var d = (JSON.parse(h.responseText));
+            window.location.hash = '#' + d.id;
+        };
+
+        h.onerror = function() {
+            document.body.className = '';
+            document.getElementById('save-button').innerHTML = 'gist could not be saved';
+            window.setTimeout(function() {
+                document.getElementById('save-button').innerHTML = 's';
+            }, 2000);
+        };
+
+        h.open('POST', 'https://api.github.com/gists', true);
+        h.send(JSON.stringify({
+            description: "Gist from mistakes.io",
+            public: true,
+            files: {
+                "index.js": {
+                    content: content
+                }
+            }
+        }));
+    }
+
+    document.getElementById('save-button').onclick = function() {
+        __saveAsGist(__editor);
+        return false;
+    };
+
+    function __showGistButton(id) {
+        var button = document.getElementById('gist-button');
+        button.style.display = 'inline';
+        button.href = 'http://gist.github.com/' + id;
+    }
+
+    function __showIframeButton(id) {
+        var button = document.getElementById('iframe-button');
+        button.style.display = 'inline';
+        button.href = window.location;
+    }
+
+    function __gist(id) {
+        // Ignore files that are clearly not javascript files.
+        //
+        // * Have an extension and it is not .txt or .js
+        // * Say 'readme'
+        function isjs(x) {
+            if (x.match(/readme/gi)) return false;
+            var n = x.split('.'),
+                ext = n[n.length - 1];
+            if (n.length > 1 && ext !== 'js' && ext !== 'txt') return false;
+            return true;
+        }
+        if (id.indexOf('.js') !== -1) {
+            xhr({ path: '/local/' + id }, function (res) {
+                return __content(res);
+            });
+        } else {
+            document.body.className = 'loading';
+            xhr({ path: '/gists/' + id,
+                host: 'api.github.com',
+                port: 443,
+                scheme: 'https'
+            }, function(res) {
+                document.body.className = '';
+                __showGistButton(id);
+                var r = jsonify.parse(res);
+                for (var k in r.files) {
+                    if (isjs(k)) return __content(r.files[k].content);
+                }
+            });
+        }
+    }
+
+    function __content(x) {
+        if (arguments.length) {
+            __editor.setValue(x);
+            return __s;
+        } else {
+            return __editor.getValue();
+        }
+    }
+
+    var __left = __div.appendChild(document.createElement('div')),
+        __right = __div.appendChild(document.createElement('div')),
+        __code = __left.appendChild(document.createElement('textarea')),
+        __results = __right.appendChild(document.createElement('textarea'));
+
+    __left.className = 'left';
+    __right.className = 'right';
+    __code.className = 'code';
+    __results.className = 'results';
+
+    if (window !== window.top) __showIframeButton();
+
+    var __editor = CodeMirror.fromTextArea(__code, {
+        mode: 'javascript',
+        matchBrackets: true,
+        tabSize: 2,
+        autofocus: (window === window.top),
+        extraKeys: {
+            "Ctrl-S": __saveAsGist,
+            "Cmd-S": __saveAsGist
+        },
+        smartIndent: true
+    });
+
+    __editor.on('change', __runCodes);
+
+    var __result = CodeMirror.fromTextArea(__results, {
+        mode: 'javascript',
+        tabSize: 2,
+        readOnly: 'nocursor'
+    });
+
+    __editor.setOption("theme", 'mistakes');
+    __result.setOption("theme", 'mistakes');
+
+    __s.gist = __gist;
+    __s.content = __content;
+    return __s;
+}
+
+module.exports = mistakes;
+
+},{"http":4,"./js/javascript":3,"jsonify":5,"restring":6,"incremental-eval":7,"live-require":8,"codemirror":9}],10:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -495,7 +674,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],5:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function(process){if (!process.EventEmitter) process.EventEmitter = function () {};
 
 var EventEmitter = exports.EventEmitter = process.EventEmitter;
@@ -681,7 +860,7 @@ EventEmitter.prototype.listeners = function(type) {
 };
 
 })(require("__browserify_process"))
-},{"__browserify_process":4}],6:[function(require,module,exports){
+},{"__browserify_process":10}],4:[function(require,module,exports){
 var http = module.exports;
 var EventEmitter = require('events').EventEmitter;
 var Request = require('./lib/request');
@@ -743,210 +922,7 @@ var xhrHttp = (function () {
     }
 })();
 
-},{"events":5,"./lib/request":7}],8:[function(require,module,exports){
-function incrementalEval(____vs, __o) {
-    __o = __o || {};
-    var ____v = ____vs.split(/\n/),
-        ____res = [];
-    for (var ____i = 0; ____i < ____v.length; ____i++) {
-        var ____line = ____v[____i];
-        if (____line) {
-            try {
-                if (____line.match(/^\s*?\/\//)) {
-                    // skip comment lines
-                } else {
-                    with(__o) {
-                        ____res[____i] = (function(____js) {
-                            return eval(____js);
-                        })(____v.slice(0, ____i + 1).join('\n'));
-                    }
-                }
-            } catch(e) {
-                ____res[____i] = e;
-            }
-        } // skip blank lines
-    }
-    return ____res;
-}
-
-if (typeof module !== 'undefined') module.exports = incrementalEval;
-
-},{}],2:[function(require,module,exports){
-var restring = require('restring'),
-    jsonify = require('jsonify'),
-    http = require('http'),
-    incrementalEval = require('incremental-eval'),
-    liveRequire = require('live-require'),
-    CodeMirror = require('codemirror');
-
-// load JS support for CodeMirror
-require('./js/javascript')(CodeMirror);
-
-function xhr(opts, callback) {
-    var o = '';
-    http.get(opts, function(res) {
-        res.on('data', function(buf) { o += buf; })
-            .on('end', function(buf) { callback(o); });
-    });
-}
-
-function mistakes(__div) {
-    var __s = {};
-    function __runCodes() {
-        var __r = incrementalEval(__editor.getValue(), {
-                require: function(x) {
-                    return liveRequire(x, __runCodes);
-                }
-            }),
-            __res = '';
-        for (var __i = 0; __i < __r.length; __i++) {
-            if (__r[__i] !== undefined &&
-                !(__r[__i] instanceof SyntaxError)) {
-                __res += restring(__r[__i]) + '\n';
-            } else {
-                __res += '\n';
-            }
-        }
-        __result.setValue(__res);
-    }
-
-    function __saveAsGist(editor) {
-        var content = editor.getValue();
-        var h = new window.XMLHttpRequest();
-
-        document.body.className = 'loading';
-        h.onload = function() {
-            document.body.className = '';
-            var d = (JSON.parse(h.responseText));
-            window.location.hash = '#' + d.id;
-        };
-
-        h.open('POST', 'https://api.github.com/gists', true);
-        h.send(JSON.stringify({
-            "description": "Gist from mistakes.io",
-            "public": true,
-            "files": {
-                "index.js": {
-                    "content": content
-                }
-            }
-        }));
-    }
-
-    document.getElementById('save-button').onclick = function() {
-        __saveAsGist(__editor);
-        return false;
-    };
-
-    function __showGistButton(id) {
-        var button = document.getElementById('gist-button');
-        button.style.display = 'inline';
-        button.href = 'http://gist.github.com/' + id;
-    }
-
-    function __showIframeButton(id) {
-        var button = document.getElementById('iframe-button');
-        button.style.display = 'inline';
-        button.href = window.location;
-    }
-
-    function __gist(id) {
-        // Ignore files that are clearly not javascript files.
-        //
-        // * Have an extension and it is not .txt or .js
-        // * Say 'readme'
-        function isjs(x) {
-            if (x.match(/readme/gi)) return false;
-            var n = x.split('.'),
-                ext = n[n.length - 1];
-            if (n.length > 1 && ext !== 'js' && ext !== 'txt') return false;
-            return true;
-        }
-        if (id.indexOf('.js') !== -1) {
-            xhr({ path: '/local/' + id }, function (res) {
-                return __content(res);
-            });
-        } else {
-            document.body.className = 'loading';
-            xhr({ path: '/gists/' + id,
-                host: 'api.github.com',
-                port: 443,
-                scheme: 'https'
-            }, function(res) {
-                document.body.className = '';
-                __showGistButton(id);
-                var r = jsonify.parse(res);
-                for (var k in r.files) {
-                    if (isjs(k)) return __content(r.files[k].content);
-                }
-            });
-        }
-    }
-
-    function __content(x) {
-        __editor.setValue(x);
-        return __s;
-    }
-
-    var __left = __div.appendChild(document.createElement('div')),
-        __right = __div.appendChild(document.createElement('div')),
-        __code = __left.appendChild(document.createElement('textarea')),
-        __results = __right.appendChild(document.createElement('textarea'));
-
-    __left.className = 'left';
-    __right.className = 'right';
-    __code.className = 'code';
-    __results.className = 'results';
-
-    if (window !== window.top) __showIframeButton();
-
-    var __editor = CodeMirror.fromTextArea(__code, {
-        mode: 'javascript',
-        matchBrackets: true,
-        tabSize: 2,
-        autofocus: (window === window.top),
-        extraKeys: {
-            "Ctrl-S": __saveAsGist,
-            "Cmd-S": __saveAsGist
-        },
-        smartIndent: true
-    });
-
-    __editor.on('change', __runCodes);
-
-    var __result = CodeMirror.fromTextArea(__results, {
-        mode: 'javascript',
-        tabSize: 2,
-        readOnly: 'nocursor'
-    });
-
-    __editor.setOption("theme", 'mistakes');
-    __result.setOption("theme", 'mistakes');
-
-    __s.gist = __gist;
-    __s.content = __content;
-    return __s;
-}
-
-module.exports = mistakes;
-
-},{"http":6,"./js/javascript":3,"incremental-eval":8,"jsonify":9,"live-require":10,"restring":11,"codemirror":12}],10:[function(require,module,exports){
-// include a script programmatically, by appending it
-// to the head of the page. guards against re-insertion,
-// and returns 'loaded' when successful.
-function liveRequire(x, callback) {
-    var scripts = document.head.getElementsByTagName('script');
-    for (var i = 0; i < scripts.length; i++) {
-        if (scripts[i].src == x) return 'loaded';
-    }
-    var scr = document.head.appendChild(document.createElement('script'));
-    scr.onload = callback;
-    scr.src = x;
-}
-
-if (typeof module !== 'undefined') module.exports = liveRequire;
-
-},{}],11:[function(require,module,exports){
+},{"events":11,"./lib/request":12}],6:[function(require,module,exports){
 var stringify = (function() {
     var DECIMALS = 4;
 
@@ -990,11 +966,51 @@ var stringify = (function() {
 
 if (typeof module !== 'undefined') module.exports = stringify;
 
-},{}],9:[function(require,module,exports){
-exports.parse = require('./lib/parse');
-exports.stringify = require('./lib/stringify');
+},{}],8:[function(require,module,exports){
+// include a script programmatically, by appending it
+// to the head of the page. guards against re-insertion,
+// and returns 'loaded' when successful.
+function liveRequire(x, callback) {
+    var scripts = document.head.getElementsByTagName('script');
+    for (var i = 0; i < scripts.length; i++) {
+        if (scripts[i].src == x) return 'loaded';
+    }
+    var scr = document.head.appendChild(document.createElement('script'));
+    scr.onload = callback;
+    scr.src = x;
+}
 
-},{"./lib/parse":13,"./lib/stringify":14}],12:[function(require,module,exports){
+if (typeof module !== 'undefined') module.exports = liveRequire;
+
+},{}],7:[function(require,module,exports){
+function incrementalEval(____vs, __o) {
+    __o = __o || {};
+    var ____v = ____vs.split(/\n/),
+        ____res = [];
+    for (var ____i = 0; ____i < ____v.length; ____i++) {
+        var ____line = ____v[____i];
+        if (____line) {
+            try {
+                if (____line.match(/^\s*?\/\//)) {
+                    // skip comment lines
+                } else {
+                    with(__o) {
+                        ____res[____i] = (function(____js) {
+                            return eval(____js);
+                        })(____v.slice(0, ____i + 1).join('\n'));
+                    }
+                }
+            } catch(e) {
+                ____res[____i] = e;
+            }
+        } // skip blank lines
+    }
+    return ____res;
+}
+
+if (typeof module !== 'undefined') module.exports = incrementalEval;
+
+},{}],9:[function(require,module,exports){
 (function(){// CodeMirror is the only global var we claim
 ;(function() {
   "use strict";
@@ -6431,7 +6447,11 @@ exports.stringify = require('./lib/stringify');
 })();
 
 })()
-},{}],15:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
+exports.parse = require('./lib/parse');
+exports.stringify = require('./lib/stringify');
+
+},{"./lib/parse":13,"./lib/stringify":14}],15:[function(require,module,exports){
 var events = require('events');
 var util = require('util');
 
@@ -6552,163 +6572,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":5,"util":16}],14:[function(require,module,exports){
-var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-    escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-    gap,
-    indent,
-    meta = {    // table of character substitutions
-        '\b': '\\b',
-        '\t': '\\t',
-        '\n': '\\n',
-        '\f': '\\f',
-        '\r': '\\r',
-        '"' : '\\"',
-        '\\': '\\\\'
-    },
-    rep;
-
-function quote(string) {
-    // If the string contains no control characters, no quote characters, and no
-    // backslash characters, then we can safely slap some quotes around it.
-    // Otherwise we must also replace the offending characters with safe escape
-    // sequences.
-    
-    escapable.lastIndex = 0;
-    return escapable.test(string) ? '"' + string.replace(escapable, function (a) {
-        var c = meta[a];
-        return typeof c === 'string' ? c :
-            '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-    }) + '"' : '"' + string + '"';
-}
-
-function str(key, holder) {
-    // Produce a string from holder[key].
-    var i,          // The loop counter.
-        k,          // The member key.
-        v,          // The member value.
-        length,
-        mind = gap,
-        partial,
-        value = holder[key];
-    
-    // If the value has a toJSON method, call it to obtain a replacement value.
-    if (value && typeof value === 'object' &&
-            typeof value.toJSON === 'function') {
-        value = value.toJSON(key);
-    }
-    
-    // If we were called with a replacer function, then call the replacer to
-    // obtain a replacement value.
-    if (typeof rep === 'function') {
-        value = rep.call(holder, key, value);
-    }
-    
-    // What happens next depends on the value's type.
-    switch (typeof value) {
-        case 'string':
-            return quote(value);
-        
-        case 'number':
-            // JSON numbers must be finite. Encode non-finite numbers as null.
-            return isFinite(value) ? String(value) : 'null';
-        
-        case 'boolean':
-        case 'null':
-            // If the value is a boolean or null, convert it to a string. Note:
-            // typeof null does not produce 'null'. The case is included here in
-            // the remote chance that this gets fixed someday.
-            return String(value);
-            
-        case 'object':
-            if (!value) return 'null';
-            gap += indent;
-            partial = [];
-            
-            // Array.isArray
-            if (Object.prototype.toString.apply(value) === '[object Array]') {
-                length = value.length;
-                for (i = 0; i < length; i += 1) {
-                    partial[i] = str(i, value) || 'null';
-                }
-                
-                // Join all of the elements together, separated with commas, and
-                // wrap them in brackets.
-                v = partial.length === 0 ? '[]' : gap ?
-                    '[\n' + gap + partial.join(',\n' + gap) + '\n' + mind + ']' :
-                    '[' + partial.join(',') + ']';
-                gap = mind;
-                return v;
-            }
-            
-            // If the replacer is an array, use it to select the members to be
-            // stringified.
-            if (rep && typeof rep === 'object') {
-                length = rep.length;
-                for (i = 0; i < length; i += 1) {
-                    k = rep[i];
-                    if (typeof k === 'string') {
-                        v = str(k, value);
-                        if (v) {
-                            partial.push(quote(k) + (gap ? ': ' : ':') + v);
-                        }
-                    }
-                }
-            }
-            else {
-                // Otherwise, iterate through all of the keys in the object.
-                for (k in value) {
-                    if (Object.prototype.hasOwnProperty.call(value, k)) {
-                        v = str(k, value);
-                        if (v) {
-                            partial.push(quote(k) + (gap ? ': ' : ':') + v);
-                        }
-                    }
-                }
-            }
-            
-        // Join all of the member texts together, separated with commas,
-        // and wrap them in braces.
-
-        v = partial.length === 0 ? '{}' : gap ?
-            '{\n' + gap + partial.join(',\n' + gap) + '\n' + mind + '}' :
-            '{' + partial.join(',') + '}';
-        gap = mind;
-        return v;
-    }
-}
-
-module.exports = function (value, replacer, space) {
-    var i;
-    gap = '';
-    indent = '';
-    
-    // If the space parameter is a number, make an indent string containing that
-    // many spaces.
-    if (typeof space === 'number') {
-        for (i = 0; i < space; i += 1) {
-            indent += ' ';
-        }
-    }
-    // If the space parameter is a string, it will be used as the indent string.
-    else if (typeof space === 'string') {
-        indent = space;
-    }
-
-    // If there is a replacer, it must be a function or an array.
-    // Otherwise, throw an error.
-    rep = replacer;
-    if (replacer && typeof replacer !== 'function'
-    && (typeof replacer !== 'object' || typeof replacer.length !== 'number')) {
-        throw new Error('JSON.stringify');
-    }
-    
-    // Make a fake root object containing our value under the key of ''.
-    // Return the result of stringifying the value.
-    return str('', {'': value});
-};
-
-},{}],13:[function(require,module,exports){
+},{"events":11,"util":16}],13:[function(require,module,exports){
 var at, // The index of the current character
     ch, // The current character
     escapee = {
@@ -6981,6 +6845,162 @@ module.exports = function (source, reviver) {
         }
         return reviver.call(holder, key, value);
     }({'': result}, '')) : result;
+};
+
+},{}],14:[function(require,module,exports){
+var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+    escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+    gap,
+    indent,
+    meta = {    // table of character substitutions
+        '\b': '\\b',
+        '\t': '\\t',
+        '\n': '\\n',
+        '\f': '\\f',
+        '\r': '\\r',
+        '"' : '\\"',
+        '\\': '\\\\'
+    },
+    rep;
+
+function quote(string) {
+    // If the string contains no control characters, no quote characters, and no
+    // backslash characters, then we can safely slap some quotes around it.
+    // Otherwise we must also replace the offending characters with safe escape
+    // sequences.
+    
+    escapable.lastIndex = 0;
+    return escapable.test(string) ? '"' + string.replace(escapable, function (a) {
+        var c = meta[a];
+        return typeof c === 'string' ? c :
+            '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+    }) + '"' : '"' + string + '"';
+}
+
+function str(key, holder) {
+    // Produce a string from holder[key].
+    var i,          // The loop counter.
+        k,          // The member key.
+        v,          // The member value.
+        length,
+        mind = gap,
+        partial,
+        value = holder[key];
+    
+    // If the value has a toJSON method, call it to obtain a replacement value.
+    if (value && typeof value === 'object' &&
+            typeof value.toJSON === 'function') {
+        value = value.toJSON(key);
+    }
+    
+    // If we were called with a replacer function, then call the replacer to
+    // obtain a replacement value.
+    if (typeof rep === 'function') {
+        value = rep.call(holder, key, value);
+    }
+    
+    // What happens next depends on the value's type.
+    switch (typeof value) {
+        case 'string':
+            return quote(value);
+        
+        case 'number':
+            // JSON numbers must be finite. Encode non-finite numbers as null.
+            return isFinite(value) ? String(value) : 'null';
+        
+        case 'boolean':
+        case 'null':
+            // If the value is a boolean or null, convert it to a string. Note:
+            // typeof null does not produce 'null'. The case is included here in
+            // the remote chance that this gets fixed someday.
+            return String(value);
+            
+        case 'object':
+            if (!value) return 'null';
+            gap += indent;
+            partial = [];
+            
+            // Array.isArray
+            if (Object.prototype.toString.apply(value) === '[object Array]') {
+                length = value.length;
+                for (i = 0; i < length; i += 1) {
+                    partial[i] = str(i, value) || 'null';
+                }
+                
+                // Join all of the elements together, separated with commas, and
+                // wrap them in brackets.
+                v = partial.length === 0 ? '[]' : gap ?
+                    '[\n' + gap + partial.join(',\n' + gap) + '\n' + mind + ']' :
+                    '[' + partial.join(',') + ']';
+                gap = mind;
+                return v;
+            }
+            
+            // If the replacer is an array, use it to select the members to be
+            // stringified.
+            if (rep && typeof rep === 'object') {
+                length = rep.length;
+                for (i = 0; i < length; i += 1) {
+                    k = rep[i];
+                    if (typeof k === 'string') {
+                        v = str(k, value);
+                        if (v) {
+                            partial.push(quote(k) + (gap ? ': ' : ':') + v);
+                        }
+                    }
+                }
+            }
+            else {
+                // Otherwise, iterate through all of the keys in the object.
+                for (k in value) {
+                    if (Object.prototype.hasOwnProperty.call(value, k)) {
+                        v = str(k, value);
+                        if (v) {
+                            partial.push(quote(k) + (gap ? ': ' : ':') + v);
+                        }
+                    }
+                }
+            }
+            
+        // Join all of the member texts together, separated with commas,
+        // and wrap them in braces.
+
+        v = partial.length === 0 ? '{}' : gap ?
+            '{\n' + gap + partial.join(',\n' + gap) + '\n' + mind + '}' :
+            '{' + partial.join(',') + '}';
+        gap = mind;
+        return v;
+    }
+}
+
+module.exports = function (value, replacer, space) {
+    var i;
+    gap = '';
+    indent = '';
+    
+    // If the space parameter is a number, make an indent string containing that
+    // many spaces.
+    if (typeof space === 'number') {
+        for (i = 0; i < space; i += 1) {
+            indent += ' ';
+        }
+    }
+    // If the space parameter is a string, it will be used as the indent string.
+    else if (typeof space === 'string') {
+        indent = space;
+    }
+
+    // If there is a replacer, it must be a function or an array.
+    // Otherwise, throw an error.
+    rep = replacer;
+    if (replacer && typeof replacer !== 'function'
+    && (typeof replacer !== 'object' || typeof replacer.length !== 'number')) {
+        throw new Error('JSON.stringify');
+    }
+    
+    // Make a fake root object containing our value under the key of ''.
+    // Return the result of stringifying the value.
+    return str('', {'': value});
 };
 
 },{}],16:[function(require,module,exports){
@@ -7336,7 +7356,7 @@ exports.format = function(f) {
   return str;
 };
 
-},{"events":5}],17:[function(require,module,exports){
+},{"events":11}],17:[function(require,module,exports){
 (function(){// UTILITY
 var util = require('util');
 var Buffer = require("buffer").Buffer;
@@ -9180,7 +9200,7 @@ SlowBuffer.prototype.writeDoubleLE = Buffer.prototype.writeDoubleLE;
 SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 
 })()
-},{"assert":17,"./buffer_ieee754":20,"base64-js":21}],7:[function(require,module,exports){
+},{"assert":17,"./buffer_ieee754":20,"base64-js":21}],12:[function(require,module,exports){
 (function(){var Stream = require('stream');
 var Response = require('./response');
 var concatStream = require('concat-stream')

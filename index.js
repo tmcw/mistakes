@@ -41,19 +41,28 @@ function mistakes(__div) {
         var h = new window.XMLHttpRequest();
 
         document.body.className = 'loading';
+
         h.onload = function() {
             document.body.className = '';
             var d = (JSON.parse(h.responseText));
             window.location.hash = '#' + d.id;
         };
 
+        h.onerror = function() {
+            document.body.className = '';
+            document.getElementById('save-button').innerHTML = 'gist could not be saved';
+            window.setTimeout(function() {
+                document.getElementById('save-button').innerHTML = 's';
+            }, 2000);
+        };
+
         h.open('POST', 'https://api.github.com/gists', true);
         h.send(JSON.stringify({
-            "description": "Gist from mistakes.io",
-            "public": true,
-            "files": {
+            description: "Gist from mistakes.io",
+            public: true,
+            files: {
                 "index.js": {
-                    "content": content
+                    content: content
                 }
             }
         }));
@@ -110,8 +119,12 @@ function mistakes(__div) {
     }
 
     function __content(x) {
-        __editor.setValue(x);
-        return __s;
+        if (arguments.length) {
+            __editor.setValue(x);
+            return __s;
+        } else {
+            return __editor.getValue();
+        }
     }
 
     var __left = __div.appendChild(document.createElement('div')),
