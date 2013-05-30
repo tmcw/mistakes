@@ -139,6 +139,14 @@ function mistakes(__div) {
 
     if (window !== window.top) __showIframeButton();
 
+    CodeMirror.keyMap.tabSpace = {
+        Tab: function(cm) {
+            var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+            cm.replaceSelection(spaces, "end", "+input");
+        },
+        fallthrough: ['basic']
+    };
+
     var __editor = CodeMirror.fromTextArea(__code, {
         mode: 'javascript',
         matchBrackets: true,
@@ -148,6 +156,7 @@ function mistakes(__div) {
             "Ctrl-S": __saveAsGist,
             "Cmd-S": __saveAsGist
         },
+        keyMap: 'tabSpace',
         smartIndent: true
     });
 
