@@ -37,8 +37,8 @@ function mistakes(__div) {
     }
 
     function __saveAsGist(editor) {
-        var content = editor.getValue();
-        var h = new window.XMLHttpRequest();
+        var content = editor.getValue(),
+            h = new window.XMLHttpRequest();
 
         document.body.className = 'loading';
 
@@ -156,7 +156,7 @@ function mistakes(__div) {
     var __result = CodeMirror.fromTextArea(__results, {
         mode: 'javascript',
         tabSize: 2,
-        readOnly: 'nocursor'
+        readOnly: true
     });
 
     __editor.setOption("theme", 'mistakes');
