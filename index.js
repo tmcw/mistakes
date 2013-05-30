@@ -141,10 +141,10 @@ function mistakes(__div) {
 
     CodeMirror.keyMap.tabSpace = {
         Tab: function(cm) {
-            var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
-            cm.replaceSelection(spaces, "end", "+input");
+            var spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+            cm.replaceSelection(spaces, 'end', '+input');
         },
-        fallthrough: ['basic']
+        fallthrough: ['default']
     };
 
     var __editor = CodeMirror.fromTextArea(__code, {
@@ -153,8 +153,8 @@ function mistakes(__div) {
         tabSize: 2,
         autofocus: (window === window.top),
         extraKeys: {
-            "Ctrl-S": __saveAsGist,
-            "Cmd-S": __saveAsGist
+            'Ctrl-S': __saveAsGist,
+            'Cmd-S': __saveAsGist
         },
         keyMap: 'tabSpace',
         smartIndent: true
