@@ -38,22 +38,15 @@ body {
   z-index:5;
 }
 
-.button:first-child {
-  border-radius:2px 0 0 2px;
-}
-
-.button:last-child {
-  border-radius:0 2px 2px 0;
-  border-right:none;
-}
-
 .button {
+  margin-right:1px;
   font-family: 'Helvetica';
   text-decoration:none;
-  background:#7E0000;
-  border-right:1px solid #550B0B;
-  padding:5px;
-  color:#fff;
+  background:#C4DACD;
+  padding:8px;
+  color:#333;
+  transition:all 200ms;
+  -webkit-transition:all 200ms;
 }
 
 #gist-button, #iframe-button {
@@ -61,7 +54,8 @@ body {
 }
 
 .button:hover {
-  background:#CE0000;
+  color:#000;
+  background:#96ADA0;
 }
 
 /* codemirror */

@@ -5,7 +5,7 @@
     <title>mistakes.io</title>
     <meta name='author' content='Tom MacWright' />
     <meta name='description' content='a line-oriented javascript learning environment' />
-    <meta property='og:site_name' content='mistakes'/>
+    <meta name='og:site_name' content='mistakes'/>
     <link href='css/mistakes.css' rel='stylesheet' />
     <link href='css/codemirror.css' rel='stylesheet' />
     <link href='css/theme.css' rel='stylesheet' />
@@ -17,9 +17,21 @@
         <div class='bg-right'></div>
     </div>
     <div class='buttons'>
-        <a title='What is this?' class='button' target='_blank' href='#4679533'>?</a><a title='Expand this window' class='button' id='iframe-button' target='_blank' href=''>⇗</a><a id='save-button' title='Save' class='button' target='_blank' href='#'>s</a><a title='This Gist' id='gist-button' class='button' target="_blank" href=''>#</a><a title='Fork this project on GitHub and make it better' class='button' target='_blank' href='https://github.com/tmcw/mistakes'>{}</a>
+        <a title='What is this?' class='button' target='_blank' href='#4679533'>help
+        </a><a title='Log In' id='login-button' class='button' target="_blank" href=''>login
+        </a><a title='Expand this window' class='button' id='iframe-button' target='_blank' href=''>⇗
+        </a><a id='save-button' title='Save' class='button' target='_blank' href='#'>save
+        </a><a title='This Gist' id='gist-button' class='button' target="_blank" href=''>#
+        </a><a title='GitHub' class='button' target='_blank' href='https://github.com/tmcw/mistakes'>{}
+        </a>
     </div>
     <script src='js/bundle.js'></script>
+    <script src='//d3nslu0hdya83q.cloudfront.net/dist/1.0/raven.min.js'></script>
+    <script>
+    Raven.config('https://f180570d5f034ce69ce59c7ee961a6b4@app.getsentry.com/11568', {
+        whitelistUrls: [/mistakes\.io/]
+    }).install();
+    </script>
     <script type="text/javascript">
       var _gauges = _gauges || [];
       (function() {
