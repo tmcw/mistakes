@@ -109,7 +109,7 @@ function mistakes(__div, clientId) {
                 __confirmToken(true);
             } catch(e) {
                 localStorage.github_token = undefined;
-                killToken();
+                killTokenUrl();
             }
         });
     }
