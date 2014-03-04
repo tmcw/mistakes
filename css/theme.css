@@ -27,3 +27,37 @@
 .cm-header, .cm-strong {font-weight:bold;}
 .cm-em {font-style:italic;}
 .cm-link {text-decoration:underline;}
+
+.CodeMirror-gutter.error { width: 10px; }
+.error-marker {
+    width:10px;
+    height:1.5em;
+    background:#EAB;
+    transition:all 100ms;
+    -webkit-transition:all 100ms;
+}
+
+.error-marker:hover {
+    background:#D68;
+}
+
+.error-marker:before {
+    opacity:0;
+    pointer-events:none;
+    content:attr(message);
+    transition:all 100ms;
+    -webkit-transition:all 100ms;
+    content:attr(message);
+    width:300px;
+    font-size:10px;
+    padding:5px;
+    position:absolute;
+    background:rgba(255, 255, 255 0.7);
+    color:red;
+    z-index:999;
+}
+
+.error-marker:hover:before {
+    opacity:1;
+    margin-left:35px;
+}

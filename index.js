@@ -1,6 +1,7 @@
 var restring = require('restring'),
     jsonify = require('jsonify'),
     http = require('http'),
+    esprima = require('esprima'),
     incrementalEval = require('incremental-eval'),
     liveRequire = require('live-require'),
     CodeMirror = require('codemirror');
@@ -19,21 +20,41 @@ function xhr(opts, callback) {
 function mistakes(__div, clientId) {
     var __s = {}, authCode;
     function __runCodes() {
-        var __r = incrementalEval(__editor.getValue(), {
-                require: function(x) {
-                    return liveRequire(x, __runCodes);
+
+        try {
+            var __syntax = esprima.parse(__editor.getValue(), { tolerant: true });
+            __editor.clearGutter('error');
+            __syntax.errors.forEach(function (error) {
+                var marker = document.createElement('div');
+                marker.className = 'error-marker';
+                marker.setAttribute('message', error.message);
+                __editor.setGutterMarker(error.lineNumber, 'error', marker);
+            });
+
+            var __r = incrementalEval(__editor.getValue(), {
+                    require: function(x) {
+                        return liveRequire(x, __runCodes);
+                    }
+                }),
+                __res = '';
+            for (var __i = 0; __i < __r.length; __i++) {
+                if (__r[__i] !== undefined &&
+                    !(__r[__i] instanceof SyntaxError)) {
+                    __res += restring(__r[__i]) + '\n';
+                } else {
+                    __res += '\n';
                 }
-            }),
-            __res = '';
-        for (var __i = 0; __i < __r.length; __i++) {
-            if (__r[__i] !== undefined &&
-                !(__r[__i] instanceof SyntaxError)) {
-                __res += restring(__r[__i]) + '\n';
-            } else {
-                __res += '\n';
             }
+            __result.setValue(__res);
+        } catch (e) {
+            __editor.clearGutter('error');
+            [e].forEach(function (error) {
+                var marker = document.createElement('div');
+                marker.className = 'error-marker';
+                marker.setAttribute('message', error.message);
+                __editor.setGutterMarker(error.lineNumber - 1, 'error', marker);
+            });
         }
-        __result.setValue(__res);
     }
 
     function __saveAsGist(editor) {
@@ -225,6 +246,7 @@ function mistakes(__div, clientId) {
             'Ctrl-S': __saveAsGist,
             'Cmd-S': __saveAsGist
         },
+        gutters: ['error'],
         keyMap: 'tabSpace',
         smartIndent: true
     });

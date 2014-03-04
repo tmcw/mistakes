@@ -21,7 +21,8 @@
     "live-require": "0.0.0",
     "jsonify": "0.0.0",
     "incremental-eval": "0.0.1",
-    "codemirror": "https://github.com/tmcw/CodeMirror/archive/module-export.tar.gz"
+    "codemirror": "https://github.com/tmcw/CodeMirror/archive/module-export.tar.gz",
+    "esprima": "~1.0.4"
   },
   "devDependencies": {
     "browserify": "2.4.3",
