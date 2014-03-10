@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "./node_modules/browservefy/bin/browservefy js/site.js:js/bundle.js 8080 --browserify=./node_modules/browserify/bin/cmd.js -- -d"
+    "start": "beefy js/site.js:js/bundle.js 8080 -- -d"
   },
   "repository": {
     "type": "git",
@@ -16,16 +16,17 @@
   "readmeFilename": "README.md",
   "gitHead": "184b0f281d06ce2f365d89c0dcd4268a7b6223cb",
   "dependencies": {
-    "uglify-js": "~2.2.4",
+    "uglify-js": "~2.4.12",
     "restring": "0.0.0",
     "live-require": "0.0.0",
     "jsonify": "0.0.0",
     "incremental-eval": "0.0.1",
     "codemirror": "https://github.com/tmcw/CodeMirror/archive/module-export.tar.gz",
-    "esprima": "~1.0.4"
+    "esprima": "~1.0.4",
+    "corslite": "0.0.5"
   },
   "devDependencies": {
-    "browserify": "2.4.3",
-    "browservefy": "0.0.8"
+    "browserify": "3.32.1",
+    "beefy": "~1.1.0"
   }
 }

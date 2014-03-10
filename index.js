@@ -2,6 +2,7 @@ var restring = require('restring'),
     jsonify = require('jsonify'),
     http = require('http'),
     esprima = require('esprima'),
+    corslite = require('corslite'),
     incrementalEval = require('incremental-eval'),
     liveRequire = require('live-require'),
     CodeMirror = require('codemirror');
@@ -37,6 +38,7 @@ function mistakes(__div, clientId) {
                     }
                 }),
                 __res = '';
+
             for (var __i = 0; __i < __r.length; __i++) {
                 if (__r[__i] !== undefined &&
                     !(__r[__i] instanceof SyntaxError)) {
@@ -45,6 +47,7 @@ function mistakes(__div, clientId) {
                     __res += '\n';
                 }
             }
+
             __result.setValue(__res);
         } catch (e) {
             __editor.clearGutter('error');
@@ -141,7 +144,8 @@ function mistakes(__div, clientId) {
 
     function __confirmToken(first) {
         if (!localStorage.github_token) return;
-        xhr({ path: '/user?access_token=' + localStorage.github_token,
+        xhr({
+            path: '/user?access_token=' + localStorage.github_token,
             host: 'api.github.com',
             port: 443,
             scheme: 'https'
@@ -193,14 +197,11 @@ function mistakes(__div, clientId) {
             });
         } else {
             document.body.className = 'loading';
-            xhr({ path: '/gists/' + id,
-                host: 'api.github.com',
-                port: 443,
-                scheme: 'https'
-            }, function(res) {
+            corslite('https://api.github.com/gists/' + id, function(err, res) {
                 document.body.className = '';
+                if (err) return;
                 __showGistButton(id);
-                var r = jsonify.parse(res);
+                var r = jsonify.parse(res.responseText);
                 for (var k in r.files) {
                     if (isjs(k)) return __content(r.files[k].content);
                 }
@@ -259,8 +260,8 @@ function mistakes(__div, clientId) {
         readOnly: true
     });
 
-    __editor.setOption("theme", 'mistakes');
-    __result.setOption("theme", 'mistakes');
+    __editor.setOption('theme', 'mistakes');
+    __result.setOption('theme', 'mistakes');
 
     __s.gist = __gist;
     __s.content = __content;

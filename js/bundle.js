@@ -38,6 +38,7 @@ function mistakes(__div, clientId) {
                     }
                 }),
                 __res = '';
+
             for (var __i = 0; __i < __r.length; __i++) {
                 if (__r[__i] !== undefined &&
                     !(__r[__i] instanceof SyntaxError)) {
@@ -46,6 +47,7 @@ function mistakes(__div, clientId) {
                     __res += '\n';
                 }
             }
+
             __result.setValue(__res);
         } catch (e) {
             __editor.clearGutter('error');
@@ -142,7 +144,8 @@ function mistakes(__div, clientId) {
 
     function __confirmToken(first) {
         if (!localStorage.github_token) return;
-        xhr({ path: '/user?access_token=' + localStorage.github_token,
+        xhr({
+            path: '/user?access_token=' + localStorage.github_token,
             host: 'api.github.com',
             port: 443,
             scheme: 'https'
@@ -194,10 +197,12 @@ function mistakes(__div, clientId) {
             });
         } else {
             document.body.className = 'loading';
-            xhr({ path: '/gists/' + id,
+            xhr({
+                path: '/gists/' + id,
                 host: 'api.github.com',
                 port: 443,
-                scheme: 'https'
+                scheme: 'https',
+                withCredentials: false
             }, function(res) {
                 document.body.className = '';
                 __showGistButton(id);
@@ -260,8 +265,8 @@ function mistakes(__div, clientId) {
         readOnly: true
     });
 
-    __editor.setOption("theme", 'mistakes');
-    __result.setOption("theme", 'mistakes');
+    __editor.setOption('theme', 'mistakes');
+    __result.setOption('theme', 'mistakes');
 
     __s.gist = __gist;
     __s.content = __content;
