@@ -122,13 +122,9 @@ function mistakes(__div, clientId) {
     }
 
     function __setAuthCode(_, gatekeeper) {
-        xhr({
-            host: gatekeeper,
-            path: '/authenticate/' + _,
-            port: 80
-        }, function(res) {
+        corslite(gatekeeper + '/authenticate/' + _, function(err, res) {
             try {
-                var data = JSON.parse(res);
+                var data = JSON.parse(res.responseText);
                 localStorage.github_token = data.token;
                 __confirmToken(true);
             } catch(e) {
@@ -144,14 +140,9 @@ function mistakes(__div, clientId) {
 
     function __confirmToken(first) {
         if (!localStorage.github_token) return;
-        xhr({
-            path: '/user?access_token=' + localStorage.github_token,
-            host: 'api.github.com',
-            port: 443,
-            scheme: 'https'
-        }, function(res) {
+        corslite('https://api.github.com/user?access_token=' + localStorage.github_token, function(err, res) {
             try {
-                var user = JSON.parse(res);
+                var user = JSON.parse(res.responseText);
                 if (!user.name) throw new Error('no name');
                 __loginButton.innerHTML = 'logout (' + user.login + ')';
                 __loginButton.onclick = function() {

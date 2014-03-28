@@ -27,6 +27,6 @@ window.onhashchange = function() {
 
 if (location.search.indexOf('?code=') === 0) {
     m.authCode(location.search.replace('?code=', ''), prod ?
-        'mistakesauth.herokuapp.com' :
-        'localhostauth.herokuapp.com');
+        'http://mistakesauth.herokuapp.com' :
+        'http://localhostauth.herokuapp.com');
 }
