@@ -53,6 +53,15 @@ Then [boot up a server](https://gist.github.com/tmcw/4989751), and go to
 
 Clone this repo and run `npm install` && `npm start`
 
+## Building
+
+Run
+
+    npm install
+    npm run build
+
+This will build the `js/bundle.js` built file.
+
 ## See Also
 
 * [jsconsole](http://jsconsole.com/)
