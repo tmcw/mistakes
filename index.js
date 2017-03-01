@@ -109,6 +109,16 @@ function mistakes(__div) {
       'https://github.com/login/oauth/authorize?client_id=' + _ + '&scope=gist');
   }
 
+  function __getAuthorizationHeaderObject() {
+    if (localStorage.github_token) {
+      return {
+        'Authorization': 'token ' + localStorage.github_token
+      };
+    } else {
+      return {};
+    }
+  }
+
   function __setAuthorizationHeader(h) {
     if (localStorage.github_token) {
       h.setRequestHeader('Authorization', 'token ' + localStorage.github_token);
@@ -182,11 +192,13 @@ function mistakes(__div) {
       });
     } else {
       document.body.className = 'loading';
-      corslite('https://api.github.com/gists/' + id, function (err, res) {
+      xhr({
+        path: 'https://api.github.com/gists/' + id,
+        headers: __getAuthorizationHeaderObject()
+      }, function (res) {
         document.body.className = '';
-        if (err) return;
         __showGistButton(id);
-        var r = jsonify.parse(res.responseText);
+        var r = jsonify.parse(res);
         for (var k in r.files) {
           if (isjs(k)) return __content(r.files[k].content);
         }
