@@ -1,5 +1,7 @@
 ## [mistakes.io](http://macwright.org/mistakes/)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/tmcw/mistakes.svg)](https://greenkeeper.io/)
+
 live-coding, oriented towards giving presentations about programming and
 showing what you mean.
 
