@@ -1,4 +1,4 @@
-## [mistakes.io](http://macwright.org/mistakes/)
+## [mistakes.io](http://mistakes.io/)
 
 live-coding, oriented towards giving presentations about programming and
 showing what you mean.
@@ -11,12 +11,12 @@ showing what you mean.
 
 There is one additional 'feature' of the interface. A magic function called
 `require` will include a javascript file by URL, on the page. Here's
-[an example](http://macwright.org/mistakes/#5051892).
+[an example](http://mistakes.io/#5051892).
 
 ## Gists
 
 mistakes supports loading from [GitHub Gists](https://gist.github.com/) to
-help you share code better. When you see a URL like http://macwright.org/mistakes/#5051892
+help you share code better. When you see a URL like http://mistakes.io/#5051892
 that means it's loading the gist at https://gist.github.com/tmcw/5051892.
 
 It works with anyone's gists. The expectation is that gists contain a single
