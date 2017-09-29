@@ -1,4 +1,4 @@
-## [mistakes.io](http://mistakes.io/)
+## [mistakes.io](https://mistakes.io/)
 
 live-coding, oriented towards giving presentations about programming and
 showing what you mean.
